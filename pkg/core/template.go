@@ -129,9 +129,7 @@ func (t *Template) setKVs(kvs map[string]string) error {
 // It returns an error if any.
 func (t *Template) createStageFile(fileMode os.FileMode) (*os.File, error) {
     srcData := t.config.SrcData
-    if srcData != "" {
-        log.Debug("Compiling source template from memory")
-    } else {
+    if t.config.Src != "" {
         log.Debugf("Using source template %s", t.config.Src)
 
         if !isFileExist(t.config.Src) {

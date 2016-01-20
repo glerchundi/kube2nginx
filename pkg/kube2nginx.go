@@ -19,12 +19,20 @@ import (
 type Config struct {
     IngressesData string
     NginxTemplatePath string
+    KubeMasterURL string
+    Namespace string
+    Selector string
+    ResyncInterval time.Duration
 }
 
 func NewConfig() *Config {
     return &Config{
         IngressesData: "",
         NginxTemplatePath: "",
+        KubeMasterURL: "",
+        Namespace: "",
+        Selector: "",
+        ResyncInterval: 1 * time.Minute,
     }
 }
 
@@ -40,7 +48,12 @@ type KubeToNginx struct {
 }
 
 func NewKubeToNginx(config *Config) *KubeToNginx {
-    return &KubeToNginx{config:config}
+    return &KubeToNginx{
+        config: config,
+        tmpl: nil,
+        ingressesData: make(map[string]string),
+        upstreamsData: make(map[string]string),
+    }
 }
 
 func (k2n *KubeToNginx) Run() {
@@ -72,7 +85,7 @@ func (k2n *KubeToNginx) Run() {
 
     // Create new k8s client
     kubeConfig := &kclient.ClientConfig{
-        MasterURL: "",
+        MasterURL: k2n.config.KubeMasterURL,
         Auth: &kclient.TokenAuth{ string(serviceAccountToken) },
         CaCertificate: caCertificate,
     }
@@ -89,10 +102,10 @@ func (k2n *KubeToNginx) Run() {
 
     // Create informer from client
     informerConfig := &kclient.InformerConfig{
-        Namespace: "default",
+        Namespace: k2n.config.Namespace,
         Resource: "services",
-        Selector: "",
-        ResyncInterval: 1 * time.Minute,
+        Selector: k2n.config.Selector,
+        ResyncInterval: k2n.config.ResyncInterval,
     }
     i, err := kubeClient.NewInformer(
         informerConfig, recvChan,
@@ -102,7 +115,7 @@ func (k2n *KubeToNginx) Run() {
         log.Fatal(err)
     }
 
-    k2n.tmpl = core.NewTemplate(&core.TemplateConfig{
+    tmplCfg := &core.TemplateConfig{
         SrcData:   core.NginxConf,
         Dest:      "/etc/nginx/nginx.conf",
         Uid:       os.Getuid(),
@@ -111,7 +124,13 @@ func (k2n *KubeToNginx) Run() {
         Prefix:    "/lb",
         CheckCmd:  "/usr/sbin/nginx -t -c {{.}}",
         ReloadCmd: "/usr/sbin/nginx -s reload",
-    }, false, false, false)
+    }
+
+    if k2n.config.NginxTemplatePath != "" {
+        tmplCfg.Src = k2n.config.NginxTemplatePath
+    }
+
+    k2n.tmpl = core.NewTemplate(tmplCfg, false, false, false)
 
     go i.Run()
 

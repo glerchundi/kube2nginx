@@ -101,7 +101,7 @@ events {
 {{else if exists "/settings/.nginx"}}
   {{template "settings" (json (getv "/settings/.nginx"))}}
 {{else}}
-  {{template "settings" (json ` + "`{}`" + `)}}
+  {{template "settings" (json ` + "`" + `{}` + "`" + `)}}
 {{end}}
 
 http {
