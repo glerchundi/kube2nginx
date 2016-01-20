@@ -1,0 +1,22 @@
+language: go
+go:
+  - 1.5
+  - tip
+script:
+  - make static
+# Travis CI fails to deploy to GiHub : mime-types-data requires Ruby version >= 2.0
+# http://stackoverflow.com/questions/33855550/travis-ci-fails-to-deploy-to-gihub-mime-types-data-requires-ruby-version-2
+before_deploy:
+  - gem install mime-types -v 2.6.2
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+      secure: "AGqZS++iQfC/etoDqRR1FzlZWnRWRIcaRiHPsI0T5nWsGUcj2Yw9p47JaeMJKUZOsHLqPdwyBT38G+rp7d3SuTl/K9cvnmvwnkWkcqzqkBgyW+phRuFOqjZhMt6E1R0j15QFHdIOWs0kfRab/Tb6RRDsZTIRozBwwQ5ctpXHTqBLA+v/Xp+y/0fALgzx/YSWM+A1zsaOkBEdkBLctDKzFMmErvlm4ZH6ncf+XfLHZzX21NdTTLf2jWPqzKbbXZuu6Uxy11RZ+nutX8BwZRW8e7G2wCCGXoEdWUVXBn+lIVdlZ08uo3sgWw7ksOucSix5ogGvVHIpBTcl1TTrexRS1DbQAaU4mKd9+GF/NqgLR9Ba2mqTQmIh8kuYJfqu1eLlf4SfcfAzVZT31jAG/FAOxHzK3M2RpZrGmW7zzy0+jQoBGCHPkkFTspaEDhVsTHNiN12EJCphGdgGAcU/wK/XCJ3dty7g9llCZoRWyMabqD/1evUmJ2McROnrkAFnk0DIBvRm67Ibz61K5Rl9qzgZjz4ij03AOHTv63RcJov15ivq7/eMY6/b4wo4uHBAeE/fVitE+fP6vikbLVzCjiGa7L3xkVM7iaUrrkRx43hnnBUi7+bARy73Po2XDjcxc44pVhtsfcVBKbtKhUwXW2t3JoJQCz4JMLyYkHSvV2GFBNc="
+  file:
+    - ${TRAVIS_BUILD_DIR}/bin/kube2nginx-linux-amd64
+  on:
+    repo: glerchundi/kube2nginx
+    branch: master
+    tags: true
+    go: 1.5

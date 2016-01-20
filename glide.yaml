@@ -1,0 +1,15 @@
+package: .
+import:
+- package: github.com/glerchundi/kube2nginx
+  subpackages:
+  - /pkg
+  - pkg/core
+- package: github.com/glerchundi/kubelistener
+  subpackages:
+  - /pkg/client
+  - pkg/client/api/unversioned
+  - pkg/client/api/v1
+- package: github.com/glerchundi/logrus
+- package: github.com/spf13/pflag
+- package: 'github.com/kelseyhightower/memkv '
+- package: github.com/kelseyhightower/memkv
