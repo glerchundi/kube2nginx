@@ -17,22 +17,34 @@ import (
 )
 
 type Config struct {
-    IngressesData string
-    NginxTemplatePath string
     KubeMasterURL string
     Namespace string
     Selector string
     ResyncInterval time.Duration
+    IngressesData string
+    NginxSrc string
+    NginxDest string
+    NginxDestUid int
+    NginxDestGid int
+    NginxDestMode string
+    NginxCheckCmd string
+    NginxReloadCmd string
 }
 
 func NewConfig() *Config {
     return &Config{
         IngressesData: "",
-        NginxTemplatePath: "",
         KubeMasterURL: "",
         Namespace: "",
         Selector: "",
         ResyncInterval: 1 * time.Minute,
+        NginxSrc: "",
+        NginxDest: "/etc/nginx/nginx.conf",
+        NginxDestUid: os.Getuid(),
+        NginxDestGid: os.Getgid(),
+        NginxDestMode: "0644",
+        NginxCheckCmd: "/usr/sbin/nginx -t -c {{.}}",
+        NginxReloadCmd: "/usr/sbin/nginx -s reload",
     }
 }
 
@@ -117,17 +129,17 @@ func (k2n *KubeToNginx) Run() {
 
     tmplCfg := &core.TemplateConfig{
         SrcData:   core.NginxConf,
-        Dest:      "/etc/nginx/nginx.conf",
-        Uid:       os.Getuid(),
-        Gid:       os.Getgid(),
-        Mode:      "0644",
+        Dest:      k2n.config.NginxDest,
+        Uid:       k2n.config.NginxDestUid,
+        Gid:       k2n.config.NginxDestGid,
+        Mode:      k2n.config.NginxDestMode,
         Prefix:    "/lb",
-        CheckCmd:  "/usr/sbin/nginx -t -c {{.}}",
-        ReloadCmd: "/usr/sbin/nginx -s reload",
+        CheckCmd:  k2n.config.NginxCheckCmd,
+        ReloadCmd: k2n.config.NginxReloadCmd,
     }
 
-    if k2n.config.NginxTemplatePath != "" {
-        tmplCfg.Src = k2n.config.NginxTemplatePath
+    if k2n.config.NginxSrc != "" {
+        tmplCfg.Src = k2n.config.NginxSrc
     }
 
     k2n.tmpl = core.NewTemplate(tmplCfg, false, false, false)
