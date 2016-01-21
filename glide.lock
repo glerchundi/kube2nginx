@@ -1,27 +1,18 @@
-hash: 8f67e691f4b50eb74ac06cdff01965e9a3cc04fa1ca02b08508bbb765cb38767
-updated: 2016-01-19T17:54:58.680490325+01:00
+hash: 57072d22af02b20e246cc262071a0fb56618ee1008af961a497db6c2dbaafa41
+updated: 2016-01-21T13:27:45.233688785+01:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 2df174808ee097f90d259e432cc04442cf60be21
   subpackages:
   - spew
-- name: github.com/glerchundi/kube2nginx
-  version: ""
-  subpackages:
-  - /pkg
-  - pkg/core
 - name: github.com/glerchundi/kubelistener
-  version: 121dbed9bc8629c57d72042d8de60fe8b647778b
-  subpackages:
-  - /pkg/client
-  - pkg/client/api/unversioned
-  - pkg/client/api/v1
+  version: d1490fa452a2fcb9fa1183d32b5cd7c9e2eacd7f
 - name: github.com/glerchundi/logrus
   version: 39dd9c24b9e7561aa92cc6f54b5f4fbad5b2df17
+- name: github.com/gorilla/websocket
+  version: 5434f8b69b7f4f4ef0120e04c046cd6ce54ef0dd
 - name: github.com/kelseyhightower/memkv
   version: 32a4556de2a1aab8ea4c8600f5ea24db3fbd8908
-- name: 'github.com/kelseyhightower/memkv '
-  version: ""
 - name: github.com/pmezard/go-difflib
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
@@ -38,16 +29,20 @@ imports:
   - /assert
 - name: golang.org/x/crypto
   version: 3760e016850398b85094c4c99e955b8c3dea5711
+  repo: https://golang.org/x/crypto
 - name: golang.org/x/net
-  version: 72aa00c6241a8013dc9b040abb45f57edbe73945
+  version: b2ed34f6fc8d65cc6a090fb87692ea6b1162fddd
   subpackages:
-  - /context
+  - /context/ctxhttp
 - name: golang.org/x/text
   version: cf4986612c83df6c55578ba198316d1684a9a287
+  repo: https://golang.org/x/text
 - name: gopkg.in/airbrake/gobrake.v2
   version: c9d51adc624b5cc4c1bf8de730a09af4878ffe2d
+  repo: https://gopkg.in/airbrake/gobrake.v2
 - name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
   version: 31e6fd4bd5a98d8ee7673d24bc54ec73c31810dd
+  repo: https://gopkg.in/gemnasium/logrus-airbrake-hook.v2
 - name: speter.net/go/exp/math/dec/inf
   version: 42ca6cd68aa922bc3f32f1e056e61b65945d9ad7
 devImports: []
