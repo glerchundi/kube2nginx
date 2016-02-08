@@ -45,8 +45,9 @@ events {
     ssl_certificate_key       /etc/nginx/certs/{{base .host}}.key;
 
     # enable session resumption to improve https performance
-    # http://vincent.bernat.im/en/blog/2011-ssl-session-reuse-rfc5077.html
-    ssl_session_cache         shared:SSL:50m;
+    # http://vincent.bernat.im/en/blog/2011-ssl-session-reuse-rfc5077.html and
+    # https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+    ssl_session_cache         shared:SSL:10m;
     ssl_session_timeout       5m;
 
     # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
@@ -60,8 +61,8 @@ events {
     ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
 
     # ciphers chosen for forward secrecy and compatibility
-    # http://blog.ivanristic.com/2013/08/configuring-apache-nginx-and-openssl-for-forward-secrecy.html
-    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-RC4-SHA:ECDHE-ECDSA-RC4-SHA:RC4-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK';
+    # https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
 
     # enable ocsp stapling (mechanism by which a site can convey certificate revocation information to visitors in a privacy-preserving, scalable manner)
     # http://blog.mozilla.org/security/2013/07/29/ocsp-stapling-in-firefox/
@@ -71,7 +72,8 @@ events {
 
     # config to enable HSTS(HTTP Strict Transport Security) https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security
     # to avoid ssl stripping https://en.wikipedia.org/wiki/SSL_stripping#SSL_stripping
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains;";
+    # https://raymii.org/s/tutorials/HTTP_Strict_Transport_Security_for_Apache_NGINX_and_Lighttpd.html
+    add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
   {{end}}
 
     # <custom>
